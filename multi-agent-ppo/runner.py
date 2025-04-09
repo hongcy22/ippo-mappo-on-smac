@@ -85,8 +85,8 @@ class Runner:
         plt.xlabel('1e4 timesteps')
         plt.ylabel('episode_rewards')
 
-        plt.savefig(self.save_path + '/plt{}.png'.format(num), format='png')
-        np.save(self.save_path + '/win_rates{}'.format(num), self.win_rates)
-        np.save(self.save_path + '/episode_rewards{}'.format(num), self.episode_rewards)
+        plt.savefig(self.save_path + '/plt_{}.png'.format(num), format='png')
+        np.save(self.save_path + '/win_rates_{}'.format(num), self.win_rates)
+        np.save(self.save_path + '/episode_rewards_{}'.format(num), self.episode_rewards)
 
         plt.close()
