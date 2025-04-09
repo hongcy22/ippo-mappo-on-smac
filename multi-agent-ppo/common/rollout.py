@@ -3,6 +3,7 @@ import torch
 from torch.distributions import one_hot_categorical
 import time
 
+
 class RolloutWorker:
     def __init__(self, env, agents, args):
         self.env = env
@@ -34,8 +35,7 @@ class RolloutWorker:
             actions, avail_actions, actions_onehot = [], [], []
             for agent_id in range(self.n_agents):
                 avail_action = self.env.get_avail_agent_actions(agent_id)
-                action = self.agents.choose_action(obs[agent_id], last_action[agent_id], agent_id,
-                                                       avail_action, evaluate)
+                action = self.agents.choose_action(obs[agent_id], last_action[agent_id], agent_id, avail_action, evaluate)
                 # generate onehot vector of th action
                 action_onehot = np.zeros(self.args.n_actions)
                 action_onehot[action] = 1
