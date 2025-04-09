@@ -70,7 +70,7 @@ class MAPPO:
         # input_shape += self.n_actions * self.n_agents * 2  # 54
         return input_shape
 
-    def learn(self, batch, max_episode_len, train_step,time_steps=0):
+    def learn(self, batch, max_episode_len, train_step, time_steps=0):
         episode_num = batch['o'].shape[0]
         self.init_hidden(episode_num)
         for key in batch.keys():
@@ -78,7 +78,7 @@ class MAPPO:
                 batch[key] = torch.tensor(batch[key], dtype=torch.long)
             else:
                 batch[key] = torch.tensor(batch[key], dtype=torch.float32)
-        u, r, avail_u, terminated, s = batch['u'], batch['r'],  batch['avail_u'], batch['terminated'], batch['s']
+        u, r, _, terminated, s = batch['u'], batch['r'], batch['avail_u'], batch['terminated'], batch['s']
 
         mask = (1 - batch["padded"].float())
 
@@ -115,16 +115,15 @@ class MAPPO:
             prev_value = 0.0
             prev_advantage = 0.0
             for transition_idx in reversed(range(max_episode_len)):
-                returns[:,transition_idx] = r[:,transition_idx] + self.args.gamma * prev_return * (1-terminated[:,transition_idx]) * mask[:, transition_idx]
-                deltas[:,transition_idx] = r[:,transition_idx] + self.args.gamma * prev_value * (1-terminated[:,transition_idx]) * mask[:, transition_idx]\
-                                           - values[:, transition_idx]
-                advantages[:,transition_idx] = deltas[:,transition_idx] + self.args.gamma * self.args.lamda * prev_advantage * (1-terminated[:,transition_idx]) * mask[:, transition_idx]
+                returns[:, transition_idx] = r[:, transition_idx] + self.args.gamma * prev_return * (1 - terminated[:, transition_idx]) * mask[:, transition_idx]
+                deltas[:, transition_idx] = r[:, transition_idx] + self.args.gamma * prev_value * (1 - terminated[:, transition_idx]) * mask[:, transition_idx] - values[:, transition_idx]
+                advantages[:, transition_idx] = deltas[:, transition_idx] + self.args.gamma * self.args.lamda * prev_advantage * (1 - terminated[:, transition_idx]) * mask[:, transition_idx]
 
-                prev_return = returns[:,transition_idx]
-                prev_value = values[:,transition_idx]
-                prev_advantage = advantages[:,transition_idx]
+                prev_return = returns[:, transition_idx]
+                prev_value = values[:, transition_idx]
+                prev_advantage = advantages[:, transition_idx]
 
-            advantages = (advantages - advantages.mean()) / ( advantages.std() + 1e-8)
+            advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
             advantages = advantages.detach()
 
             if self.args.use_gpu:
@@ -163,10 +162,8 @@ class MAPPO:
         # if train_step > 0 and train_step % self.args.target_update_cycle == 0:
         #     self.target_critic.load_state_dict(self.eval_critic.state_dict())
 
-
     def _get_critic_inputs(self, batch, transition_idx, max_episode_len):
-        obs, obs_next, s, s_next = batch['o'][:, transition_idx], batch['o_next'][:, transition_idx],\
-                                   batch['s'][:, transition_idx], batch['s_next'][:, transition_idx]
+        obs, obs_next, s, s_next = batch['o'][:, transition_idx], batch['o_next'][:, transition_idx], batch['s'][:, transition_idx], batch['s_next'][:, transition_idx]
         # u_onehot = batch['u_onehot'][:, transition_idx]
         # if transition_idx != max_episode_len - 1:
         #     u_onehot_next = batch['u_onehot'][:, transition_idx + 1]
@@ -260,7 +257,7 @@ class MAPPO:
         action_prob[avail_actions == 0] = 0.0
         action_prob = action_prob / action_prob.sum(dim=-1, keepdim=True)
         action_prob[avail_actions == 0] = 0.0
-        
+
         action_prob = action_prob + 1e-10
 
         if self.args.use_gpu:
@@ -277,4 +274,4 @@ class MAPPO:
         if not os.path.exists(self.model_dir):
             os.makedirs(self.model_dir)
         torch.save(self.eval_critic.state_dict(), self.model_dir + '/' + num + '_critic_params.pkl')
-        torch.save(self.policy_rnn.state_dict(),  self.model_dir + '/' + num + '_rnn_params.pkl')
+        torch.save(self.policy_rnn.state_dict(), self.model_dir + '/' + num + '_rnn_params.pkl')

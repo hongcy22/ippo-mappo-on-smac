@@ -76,7 +76,7 @@ class IPPO:
                 batch[key] = torch.tensor(batch[key], dtype=torch.long)
             else:
                 batch[key] = torch.tensor(batch[key], dtype=torch.float32)
-        u, r, avail_u, terminated, s = batch['u'], batch['r'], batch['avail_u'], batch['terminated'], batch['s']
+        u, r, _, terminated, s = batch['u'], batch['r'], batch['avail_u'], batch['terminated'], batch['s']
 
         mask = (1 - batch["padded"].float())
 
@@ -113,14 +113,9 @@ class IPPO:
             prev_value = 0.0
             prev_advantage = 0.0
             for transition_idx in reversed(range(max_episode_len)):
-                returns[:, transition_idx] = r[:, transition_idx] + self.args.gamma * prev_return * (
-                            1 - terminated[:, transition_idx]) * mask[:, transition_idx]
-                deltas[:, transition_idx] = r[:, transition_idx] + self.args.gamma * prev_value * (
-                            1 - terminated[:, transition_idx]) * mask[:, transition_idx] \
-                                            - values[:, transition_idx]
-                advantages[:, transition_idx] = deltas[:,
-                                                transition_idx] + self.args.gamma * self.args.lamda * prev_advantage * (
-                                                            1 - terminated[:, transition_idx]) * mask[:, transition_idx]
+                returns[:, transition_idx] = r[:, transition_idx] + self.args.gamma * prev_return * (1 - terminated[:, transition_idx]) * mask[:, transition_idx]
+                deltas[:, transition_idx] = r[:, transition_idx] + self.args.gamma * prev_value * (1 - terminated[:, transition_idx]) * mask[:, transition_idx] - values[:, transition_idx]
+                advantages[:, transition_idx] = deltas[:, transition_idx] + self.args.gamma * self.args.lamda * prev_advantage * (1 - terminated[:, transition_idx]) * mask[:, transition_idx]
 
                 prev_return = returns[:, transition_idx]
                 prev_value = values[:, transition_idx]
@@ -167,8 +162,7 @@ class IPPO:
         #     self.target_critic.load_state_dict(self.eval_critic.state_dict())
 
     def _get_critic_inputs(self, batch, transition_idx, max_episode_len):
-        obs, obs_next, s, s_next = batch['o'][:, transition_idx], batch['o_next'][:, transition_idx], \
-                                   batch['s'][:, transition_idx], batch['s_next'][:, transition_idx]
+        obs, obs_next, s, s_next = batch['o'][:, transition_idx], batch['o_next'][:, transition_idx], batch['s'][:, transition_idx], batch['s_next'][:, transition_idx]
         # u_onehot = batch['u_onehot'][:, transition_idx]
         # if transition_idx != max_episode_len - 1:
         #     u_onehot_next = batch['u_onehot'][:, transition_idx + 1]

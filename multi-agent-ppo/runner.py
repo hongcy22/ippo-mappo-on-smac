@@ -5,6 +5,7 @@ from agent.agent import Agents
 import matplotlib.pyplot as plt
 from smac.env import StarCraft2Env
 
+
 class Runner:
     def __init__(self, env, args):
         self.env = env
@@ -84,8 +85,8 @@ class Runner:
         plt.xlabel('1e4 timesteps')
         plt.ylabel('episode_rewards')
 
-        plt.savefig(self.save_path + '/plt.png'.format(num), format='png')
-        np.save(self.save_path + '/win_rates'.format(num), self.win_rates)
-        np.save(self.save_path + '/episode_rewards'.format(num), self.episode_rewards)
+        plt.savefig(self.save_path + '/plt{}.png'.format(num), format='png')
+        np.save(self.save_path + '/win_rates{}'.format(num), self.win_rates)
+        np.save(self.save_path + '/episode_rewards{}'.format(num), self.episode_rewards)
 
         plt.close()

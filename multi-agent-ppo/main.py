@@ -1,6 +1,6 @@
 from runner import Runner
 from smac.env import StarCraft2Env
-from common.arguments import get_mixer_args,get_common_args
+from common.arguments import get_mixer_args, get_common_args
 import os
 
 if __name__ == '__main__':

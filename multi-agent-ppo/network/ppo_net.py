@@ -2,6 +2,7 @@ import torch.nn as nn
 import torch
 import torch.nn.functional as F
 
+
 class PPOCritic(nn.Module):
     def __init__(self, critic_input_shape, args, layer_norm=True):
         super(PPOCritic, self).__init__()
@@ -25,6 +26,7 @@ class PPOCritic(nn.Module):
         h = self.rnn(x, h_in)
         v = self.fc2(h)
         return v, h
+
 
 class PPOActor(nn.Module):
     def __init__(self, input_shape, args):

@@ -4,6 +4,7 @@ from policy.mappo import MAPPO
 from policy.ippo import IPPO
 from torch.distributions import Categorical
 
+
 class Agents:
     def __init__(self, args):
         self.n_actions = args.n_actions
@@ -18,7 +19,7 @@ class Agents:
 
     def choose_action(self, obs, last_action, agent_num, avail_actions, evaluate=False):
         inputs = obs.copy()
-        avail_actions_ind = np.nonzero(avail_actions)[0]
+        # avail_actions_ind = np.nonzero(avail_actions)[0]
         agent_id = np.zeros(self.n_agents)
         agent_id[agent_num] = 1.
         if self.args.last_action:
