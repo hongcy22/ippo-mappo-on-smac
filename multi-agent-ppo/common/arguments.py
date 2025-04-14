@@ -15,7 +15,7 @@ def get_common_args():
     parser.add_argument('--map', type=str, default='3m', help='the map of the game')
     parser.add_argument('--seed', type=int, default=123, help='random seed')
     parser.add_argument('--step_mul', type=int, default=8, help='how many steps to make an action')
-    parser.add_argument('--replay_dir', type=str, default='./replay', help='the directory of save the replay')
+    parser.add_argument('--replay_dir', type=str, default='C:/Users/singularity/Desktop/research/study/ppo_mappo/ippo-mappo-on-smac/multi-agent-ppo/replay', help='the directory of save the replay')
     parser.add_argument('--alg', type=str, default='ippo', help='the algorithm to train the agent')
     parser.add_argument('--last_action', type=bool, default=True, help='whether to use the last action to choose action')
     parser.add_argument('--reuse_network', type=bool, default=True, help='whether to use one network for all agents')
@@ -43,7 +43,7 @@ def get_mixer_args(args):
     args.train_steps = 1
 
     # how often to save the model
-    args.save_cycle = 9000
+    args.save_cycle = 300
 
     # how often to update the target_net
     # args.target_update_cycle = 200

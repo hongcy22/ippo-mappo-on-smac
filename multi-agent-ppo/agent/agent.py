@@ -64,4 +64,5 @@ class Agents:
             batch[key] = batch[key][:, :max_episode_len]
         self.policy.learn(batch, max_episode_len, train_step, time_steps)
         if train_step > 0 and train_step % self.args.save_cycle == 0:
+            print('Saving model at step {}'.format(train_step))
             self.policy.save_model(train_step)

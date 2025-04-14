@@ -270,8 +270,7 @@ class MAPPO:
         # self.target_critic_hidden = torch.zeros((episode_num, self.n_agents, self.args.rnn_hidden_dim))
 
     def save_model(self, train_step):
-        num = str(train_step // self.args.save_cycle)
         if not os.path.exists(self.model_dir):
             os.makedirs(self.model_dir)
-        torch.save(self.eval_critic.state_dict(), self.model_dir + '/' + num + '_critic_params.pkl')
-        torch.save(self.policy_rnn.state_dict(), self.model_dir + '/' + num + '_rnn_params.pkl')
+        torch.save(self.eval_critic.state_dict(), self.model_dir + '/critic_params.pkl')
+        torch.save(self.policy_rnn.state_dict(), self.model_dir + '/rnn_params.pkl')
