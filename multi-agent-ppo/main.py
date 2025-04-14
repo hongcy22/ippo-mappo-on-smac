@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     runner = Runner(env, args)
     if args.learn:
-        runner.run()
+        runner.run()  # add num=0 means the different time to run
     else:
         win_rate = runner.evaluate_sparse()
         print('The win rate of {} is  {}'.format(args.alg, win_rate))

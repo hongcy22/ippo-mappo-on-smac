@@ -37,6 +37,7 @@ class RolloutWorker:
                 avail_action = self.env.get_avail_agent_actions(agent_id)
                 action = self.agents.choose_action(obs[agent_id], last_action[agent_id], agent_id, avail_action, evaluate)
                 # generate onehot vector of th action
+                action = action.item() if isinstance(action, torch.Tensor) else action
                 action_onehot = np.zeros(self.args.n_actions)
                 action_onehot[action] = 1
                 actions.append(action)

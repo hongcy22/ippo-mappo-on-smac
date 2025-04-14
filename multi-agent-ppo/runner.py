@@ -54,8 +54,9 @@ class Runner:
             self.agents.train(episode_batch, train_steps, time_steps)
             train_steps += self.args.ppo_n_epochs
 
+        print('Training finished, time_steps {}'.format(time_steps))
         win_rate, episode_reward = self.evaluate()
-        print('win_rate is ', win_rate)
+        print('The average win_rate is ', win_rate)
         self.win_rates.append(win_rate)
         self.episode_rewards.append(episode_reward)
         self.plt(num)
@@ -72,18 +73,22 @@ class Runner:
 
     def plt(self, num):
         plt.figure(figsize=(12, 8))
-        plt.axis([0, self.args.n_steps, 0, 5000])
-        plt.cla()
 
         plt.subplot(2, 1, 1)
         plt.plot(range(len(self.win_rates)), self.win_rates)
         plt.xlabel('1e4 timesteps')
         plt.ylabel('win_rate')
+        plt.xlim(0, len(self.win_rates))
+        plt.ylim(0, 1)
 
         plt.subplot(2, 1, 2)
         plt.plot(range(len(self.episode_rewards)), self.episode_rewards)
         plt.xlabel('1e4 timesteps')
         plt.ylabel('episode_rewards')
+        plt.xlim(0, len(self.episode_rewards))
+        plt.ylim(0, max(self.episode_rewards) + 1)
+
+        plt.tight_layout()
 
         plt.savefig(self.save_path + '/plt_{}.png'.format(num), format='png')
         np.save(self.save_path + '/win_rates_{}'.format(num), self.win_rates)
