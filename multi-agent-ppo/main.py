@@ -19,6 +19,9 @@ if __name__ == '__main__':
     args.state_shape = env_info["state_shape"]
     args.obs_shape = env_info["obs_shape"]
     args.episode_limit = env_info["episode_limit"]
+    args.last_action = bool(args.last_action)
+    args.reuse_network = bool(args.reuse_network)
+    args.learn = bool(args.learn)
 
     runner = Runner(env, args)
     if args.learn:

@@ -33,16 +33,15 @@ class MAPPO:
 
         self.model_dir = args.model_dir + '/' + args.alg + '/' + args.map
 
-        # if os.path.exists(self.model_dir + '/rnn_net_params.pkl'):
-        #     if os.path.exists(self.model_dir + '/rnn_params.pkl'):
-        #         path_rnn = self.model_dir + '/rnn_params.pkl'
-        #         path_coma = self.model_dir + '/critic_params.pkl'
-        #         map_location = 'cuda:0' if self.args.use_gpu else 'cpu'
-        #         self.policy_rnn.load_state_dict(torch.load(path_rnn, map_location=map_location))
-        #         self.eval_critic.load_state_dict(torch.load(path_coma, map_location=map_location))
-        #         print('Successfully load the model: {} and {}'.format(path_rnn, path_coma))
-        #     else:
-        #         raise Exception("No model!")
+        if os.path.exists(self.model_dir + '/rnn_params.pkl'):
+            path_rnn = self.model_dir + '/rnn_params.pkl'
+            path_coma = self.model_dir + '/critic_params.pkl'
+            map_location = 'cuda:0' if self.args.use_gpu else 'cpu'
+            self.policy_rnn.load_state_dict(torch.load(path_rnn, map_location=map_location))
+            self.eval_critic.load_state_dict(torch.load(path_coma, map_location=map_location))
+            print('Successfully load the model: {} and {}'.format(path_rnn, path_coma))
+        else:
+            raise Exception("No model!")
 
         # self.target_critic.load_state_dict(self.eval_critic.state_dict())
 
